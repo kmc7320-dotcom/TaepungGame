@@ -5,12 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>태풍이와 친구들의 아케이드 랜드 🐾</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* 메인 화면 전용 추가 감성 디자인 스타일 */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .game-box {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 650px;
+            width: 100%;
+        }
+        .photo-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 10px 5px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .photo-btn:hover {
+            background: #ffecb3;
+            border-color: #ffc107;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: #d35400;
+        }
+    </style>
 </head>
 <body>
-    
-   <div class="game-box">
-         아케이드 메인 선택 화면 (가운데 정렬 스타일) -->
-        <div id="arcade-lobby" style="display: none; text-align: center; padding-top: 40px;">
+    <div class="game-box">
+        <!-- 아케이드 메인 선택 화면 (숨김) -->
+        <div id="arcade-lobby" style="display: none; text-align: center; padding-top: 20px;">
             <h2>🐾 태풍이와 친구들의 아케이드 랜드 🐾</h2>
             <p class="story-text" style="margin: 15px 0; color: #555;">
                 원하는 놀이를 선택해 주세요!<br> 즐거운 시간을 보내봐요 🦴
@@ -67,17 +106,17 @@
             </div>
         </div>
 
-      
-
         <!-- 2. 조각 퍼즐 게임 화면 -->
         <div id="puzzle-screen" style="display: block; text-align: center;">
-            <h2>🧩 태풍이와 친구들 조각 퍼즐 맞추기</h2>
-            <p>조각을 클릭해 자리를 바꾸며 그림을 완성해 보세요!</p>
+            <div style="background: linear-gradient(135deg, #ffecd2 100%, #fcb69f 0%); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                <h2 style="margin: 0; color: #d35400; font-size: 24px;">🧩 태풍이와 친구들 조각 퍼즐</h2>
+                <p style="margin: 5px 0 0 0; color: #6e2c00; font-size: 14px;">조각을 클릭해 자리를 바꾸며 예쁜 사진을 완성해 보세요! 🦴</p>
+            </div>
             
             <!-- 사진 선택 메뉴 -->
             <div id="puzzle-select-menu">
-                <p>퍼즐로 맞출 태풍이랑 친구들 사진을 선택해 주세요! (1~22번)</p>
-                <div class="photo-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px 0;">
+                <p style="font-weight: bold; color: #555; margin-bottom: 12px;">✨ 퍼즐로 맞출 사진을 선택해 주세요 (1 ~ 22번)</p>
+                <div class="photo-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0;">
                     <button onclick="startPuzzleWithPhoto('1.jpg')" class="photo-btn">강태풍1</button>
                     <button onclick="startPuzzleWithPhoto('2.jpg')" class="photo-btn">강태풍2</button>
                     <button onclick="startPuzzleWithPhoto('3.jpg')" class="photo-btn">강태풍3</button>
@@ -88,7 +127,7 @@
                     <button onclick="startPuzzleWithPhoto('8.jpg')" class="photo-btn">강태풍8</button>
                     <button onclick="startPuzzleWithPhoto('9.jpg')" class="photo-btn">강태풍9</button>
                     <button onclick="startPuzzleWithPhoto('10.jpg')" class="photo-btn">강태풍10</button>
-                    <button onclick="startPuzzleWithPhoto('11.jpg')" class="photo-btn">강태풍 친구들11</button>
+                    <button onclick="startPuzzleWithPhoto('11.jpg')" class="photo-btn">친구들11</button>
                     <button onclick="startPuzzleWithPhoto('12.jpg')" class="photo-btn">강태풍12</button>
                     <button onclick="startPuzzleWithPhoto('13.jpg')" class="photo-btn">강태풍13</button>
                     <button onclick="startPuzzleWithPhoto('14.jpg')" class="photo-btn">강태풍14</button>
@@ -120,7 +159,7 @@
                 </div>
 
                 <p id="puzzle-status" style="font-weight: bold; color: #28a745; height: 20px;"></p>
-                <button onclick="backToPhotoSelect()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 5px;">🖼️ 다른 사진 고르기</button>
+                <button onclick="backToPhotoSelect()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 5px; font-weight: bold;">🖼️ 다른 사진 고르기</button>
             </div>
             
             <br>
