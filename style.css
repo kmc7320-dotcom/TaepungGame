@@ -1,8 +1,11 @@
 /* 퍼즐 조각 기본 스타일 (PC/모바일 공통 적용) */
 .puzzle-piece {
+    /* 이미지가 칸 안에 꽉 차도록 비율을 유지하며 잘리게 설정 */
     background-size: cover; 
     background-position: center;
     background-repeat: no-repeat;
+    
+    /* 조각들이 칸 밖으로 삐져나가지 않도록 크기 고정 */
     width: 100%;
     height: 100%;
     box-sizing: border-box;
@@ -35,4 +38,5 @@
     .photo-grid {
         grid-template-columns: repeat(4, 1fr) !important;
     }
+    
 }
