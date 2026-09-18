@@ -89,3 +89,72 @@ function checkWin() {
         document.getElementById("puzzle-status").innerText = "🎉 축하합니다! 퍼즐 완성! 🐾";
     }
 }
+// --- 어질리티(뛰어놀기) 게임 로직 ---
+let canvas, ctx;
+let frisbeeCount = 0;
+let ballCount = 0;
+let hurdleCount = 0;
+let hearts = 0;
+
+// 원반 던지기 버튼 클릭 시
+function throwFrisbee() {
+    if (frisbeeCount < 5) {
+        frisbeeCount++;
+        document.getElementById("frisbee-count").innerText = frisbeeCount;
+        document.getElementById("taepung-dialog").innerText = "🥏 영차! 원반을 물어왔어요! 🐾";
+        checkAgilityProgress();
+    }
+}
+
+// 공놀이 하기 버튼 클릭 시
+function throwBall() {
+    if (ballCount < 3) {
+        ballCount++;
+        document.getElementById("ball-count").innerText = ballCount;
+        document.getElementById("taepung-dialog").innerText = "🎾 신나게 공을 쫓아가는 태풍이! 🏃‍♂️";
+        checkAgilityProgress();
+    }
+}
+
+// 진행 상황 체크 및 다음 스테이지 전환
+function checkAgilityProgress() {
+    // 원반 5개와 공 3개를 모두 채우면 2단계(점프) 또는 친구 선택으로 연동
+    if (frisbeeCount >= 5 && ballCount >= 3) {
+        document.getElementById("taepung-dialog").innerText = "✨ 대단해요! 장애물 뛰어넘기 스테이지 해제! 🚧";
+        document.getElementById("stage-1-panel").style.display = "none";
+        document.getElementById("stage-2-panel").style.display = "block";
+    }
+}
+
+// 점프하기 버튼 액션
+function jumpButtonAction() {
+    if (hurdleCount < 3) {
+        hurdleCount++;
+        document.getElementById("hurdle-count").innerText = hurdleCount;
+        if (hurdleCount >= 3) {
+            document.getElementById("taepung-dialog").innerText = "🏆 어질리티 완료! 함께 놀 친구를 골라주세요! 🐾";
+            document.getElementById("stage-2-panel").style.display = "none";
+            document.getElementById("stage-3-panel").style.display = "block";
+        } else {
+            document.getElementById("taepung-dialog").innerText = `🚧 영차! 멋지게 점프 성공! (${hurdleCount}/3)`;
+        }
+    }
+}
+
+// 친구 선택 기능
+function selectFriend(friendName) {
+    document.getElementById("taepung-dialog").innerText = `🎉 태풍이와 ${friendName}(이)가 즐겁게 친구가 되었어요! 🦴`;
+}
+
+// 캔버스 업데이트 루프 (필요 시 그래픽 렌더링 용도)
+function updateGame() {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // 간단한 배경이나 태풍이 캐릭터 드로잉 공간
+    ctx.fillStyle = "#e8f5e9";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.fillStyle = "#333";
+    ctx.font = "14px sans-serif";
+    ctx.fillText("🐾 태풍이 운동장 (어질리티 플레이 중)", 20, 30);
+}
