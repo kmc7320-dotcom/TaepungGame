@@ -101,3 +101,62 @@ button:hover {
 .photo-btn:hover {
     background-color: #0056b3;
 }
+
+/* --- 모바일 및 화면 자동 맞춤 반응형 스타일 --- */
+body {
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: 'Malgun Gothic', sans-serif;
+    background-color: #f4f6f8;
+}
+
+/* 메인 컨테이너나 카드 영역이 화면을 꽉 채우되 너무 크지 않게 조절 */
+.arcade-container, #arcade-lobby, #play-screen, #puzzle-screen {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+/* 퍼즐 판과 원본 사진 영역이 모바일에서 세로로 예쁘게 배치되도록 설정 */
+#puzzle-game-area > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 스마트폰처럼 화면이 좁을 때는(가로 600px 이하) 원본과 퍼즐을 위아래로 배치해 크게 보기 */
+@media screen and (max-width: 600px) {
+    #puzzle-game-area > div {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* 퍼즐 조각과 원본 사진 크기를 모바일에 맞게 키우기 */
+    #puzzle-board {
+        grid-template-columns: repeat(3, 90px) !important;
+        grid-template-rows: repeat(3, 90px) !important;
+    }
+    
+    #puzzle-board > div {
+        width: 90px !important;
+        height: 90px !important;
+        background-size: 270px 270px !important;
+    }
+
+    #puzzle-original-img {
+        width: 130px !important;
+        height: 130px !important;
+    }
+    
+    /* 게임 캔버스 크기 자동 맞춤 */
+    #gameCanvas {
+        width: 100% !important;
+        max-width: 350px;
+        height: auto !important;
+    }
+}
