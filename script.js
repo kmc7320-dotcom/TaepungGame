@@ -45,7 +45,7 @@ function startPuzzleWithPhoto(fileName) {
         originalImg.src = `images/${selectedPhoto}`;
     }
     
-    // 완벽하게 섞이도록 하되, 시작할 때 우연히 원본과 똑같이 섞이는 경우 방지
+    // 완벽하게 섞이되, 시작할 때 원본과 똑같이 섞이는 경우 방지
     do {
         puzzleOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
         puzzleOrder.sort(() => Math.random() - 0.5);
@@ -91,7 +91,7 @@ function clickPiece(index) {
     }
 }
 
-// 원본 사진과 완전히 일치하는지 정확히 검사하는 함수
+// 원본 사진과 완전히 일치하는지 정확히 검사하여 게임 종료/메인 이동 처리
 function checkWin() {
     let isWin = puzzleOrder.every((val, idx) => val === idx);
     if (isWin) {
@@ -141,7 +141,7 @@ function jumpButtonAction() {
         document.getElementById("hurdle-count").innerText = hurdleCount;
         isRunning = true;
         if (hurdleCount >= 3) {
-            document.getElementById("taepung-dialog").innerHTML = "🏆 어질리티 완료! 친구와 함께 완벽하게 완주했어요! 🐾<br><button onclick='goLobby()' style='margin-top:8px; background:#4caf50; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer; font-weight:bold;'>🏠 메인(로비)로 가기</button>";
+            document.getElementById("taepung-dialog").innerHTML = "🏆 어질리티 완료! 친구와 함께 완벽하게 완주했어요! 🐾<br><button onclick='goLobby()' style='margin-top:8px; background:#4caf50; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-weight:bold;'>🏠 메인(로비)로 가기</button>";
             document.getElementById("stage-2-panel").style.display = "none";
             document.getElementById("stage-3-panel").style.display = "block";
         } else {
@@ -151,7 +151,7 @@ function jumpButtonAction() {
 }
 
 function selectFriend(friendName) {
-    document.getElementById("taepung-dialog").innerHTML = `🎉 태풍이와 ${friendName}(이)가 함께 즐겁게 뛰어놀고 있어요! 🦴<br><button onclick='goLobby()' style='margin-top:8px; background:#4caf50; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer; font-weight:bold;'>🏠 메인(로비)로 가기</button>`;
+    document.getElementById("taepung-dialog").innerHTML = `🎉 태풍이와 ${friendName}(이)가 함께 즐겁게 뛰어놀고 있어요! 🦴<br><button onclick='goLobby()' style='margin-top:8px; background:#4caf50; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-weight:bold;'>🏠 메인(로비)로 가기</button>`;
 }
 
 // --- 태풍이 운동장 애니메이션 루프 (그레이, 블랙, 화이트 조합) ---
