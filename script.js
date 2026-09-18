@@ -30,7 +30,7 @@ function goLobby() {
 }
 
 // --- 조각 퍼즐 게임 로직 ---
-let selectedPhoto = "1.jpg"; // 기본 선택 사진
+let selectedPhoto = "1.jpg"; 
 let puzzleBoard = document.getElementById("puzzle-board");
 let firstIndex = null;
 let puzzleOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
@@ -40,7 +40,7 @@ function startPuzzleWithPhoto(fileName) {
     document.getElementById("puzzle-select-menu").style.display = "none";
     document.getElementById("puzzle-game-area").style.display = "block";
     
-    // 원본 사진 미리보기 이미지 경로 설정
+    // 원본 사진 미리보기 설정
     let originalImg = document.getElementById("puzzle-original-img");
     if (originalImg) {
         originalImg.src = `images/${selectedPhoto}`;
@@ -55,6 +55,7 @@ function startPuzzleWithPhoto(fileName) {
 }
 
 function renderPuzzle() {
+    puzzleBoard = document.getElementById("puzzle-board"); // 확실하게 요소 재참조
     puzzleBoard.innerHTML = "";
     puzzleOrder.forEach((imgIndex, currentIndex) => {
         let piece = document.createElement("div");
@@ -100,7 +101,7 @@ let canvas, ctx;
 let frisbeeCount = 0;
 let ballCount = 0;
 let hurdleCount = 0;
-let hearts = 0;
+let taepungX = 50; 
 
 // 원반 던지기 버튼 클릭 시
 function throwFrisbee() {
@@ -151,10 +152,7 @@ function selectFriend(friendName) {
     document.getElementById("taepung-dialog").innerText = `🎉 태풍이와 ${friendName}(이)가 즐겁게 친구가 되었어요! 🦴`;
 }
 
-// --- 태풍이의 위치 변수 ---
-let taepungX = 50; 
-
-// --- 태풍이 운동장 애니메이션 루프 ---
+// --- 태풍이 운동장 애니메이션 루프 (공, 원반, 허들 시각화 추가) ---
 function updateGame() {
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -171,9 +169,25 @@ function updateGame() {
     ctx.lineTo(400, 150);
     ctx.stroke();
 
-    // 3. 달리는 태풍이 표현
+    // 3. 스테이지에 따른 소품(공, 원반, 허들) 그리기
+    if (frisbeeCount > 0 || ballCount > 0) {
+        // 공이나 원반이 날아가는 모습 표현
+        ctx.fillStyle = frisbeeCount > 0 ? "#ff9800" : "#e91e63";
+        ctx.beginPath();
+        ctx.arc(320, 130, 8, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    if (hurdleCount > 0 || document.getElementById("stage-2-panel").style.display === "block") {
+        // 장애물(허들) 그리기
+        ctx.fillStyle = "#9c27b0";
+        ctx.fillRect(250, 110, 10, 40); // 기둥
+        ctx.fillRect(230, 110, 50, 8);  // 가로 바
+    }
+
+    // 4. 달리는 태풍이 캐릭터 표현 (주황빛 보더콜리 느낌)
     ctx.fillStyle = "#ff9800"; 
-    ctx.fillRect(taepungX, 110, 40, 30); 
+    ctx.fillRect(taepungX, 110, 40, 30); // 몸통
     
     // 머리
     ctx.fillStyle = "#f57c00";
@@ -187,14 +201,14 @@ function updateGame() {
     ctx.lineTo(taepungX - 10, 110 + Math.sin(Date.now() / 100) * 10);
     ctx.stroke();
 
-    // 4. 글씨 및 상태 안내
+    // 5. 상단 안내 텍스트
     ctx.fillStyle = "#333";
     ctx.font = "bold 13px sans-serif";
     ctx.fillText("🐾 태풍이 운동장 (어질리티 플레이 중)", 15, 25);
     
-    // 원반이나 공을 누르기 시작하면 태풍이가 앞으로 달리기 시작!
-    if (frisbeeCount > 0 || ballCount > 0) {
+    // 버튼을 눌러 게임이 진행되면 태풍이가 앞으로 전진
+    if (frisbeeCount > 0 || ballCount > 0 || hurdleCount > 0) {
         taepungX += 1.5;
-        if (taepungX > 330) taepungX = 40; 
+        if (taepungX > 330) taepungX = 40; // 끝까지 가면 다시 돌아와서 무한 질주
     }
 }

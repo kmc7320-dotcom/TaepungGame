@@ -1,142 +1,11 @@
-body {
-    background-color: #f0f4f8;
-    font-family: 'Malgun Gothic', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-.game-box {
-    background: white;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    text-align: center;
-    width: 460px;
-}
-
-.story-text {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 25px;
-}
-
-button {
-    background-color: #ff7f50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-button:hover {
-    background-color: #ff6348;
-}
-
-.action-buttons {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.score-board {
-    background: #fff5f2;
-    padding: 10px;
-    border-radius: 10px;
-    margin: 10px 0;
-    font-size: 14px;
-}
-
-/* 태풍이가 뛰어노는 잔디밭 캔버스 디자인 */
-#gameCanvas {
-    background-color: #d4edda;
-    border: 3px solid #c3e6cb;
-    border-radius: 10px;
-    display: block;
-    margin: 0 auto;
-}
-/* 3단계 친구 선택 그리드 스타일 */
-.friend-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.friend-grid button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.friend-grid button:hover {
-    background-color: #0056b3;
-}
-.photo-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 4px;
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.photo-btn:hover {
-    background-color: #0056b3;
-}
-
-/* --- 모바일 및 화면 자동 맞춤 반응형 스타일 --- */
-body {
-    margin: 0;
-    padding: 10px;
-    box-sizing: border-box;
-    font-family: 'Malgun Gothic', sans-serif;
-    background-color: #f4f6f8;
-}
-
-/* 메인 컨테이너나 카드 영역이 화면을 꽉 채우되 너무 크지 않게 조절 */
-.arcade-container, #arcade-lobby, #play-screen, #puzzle-screen {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 15px;
-    box-sizing: border-box;
-}
-
-/* 퍼즐 판과 원본 사진 영역이 모바일에서 세로로 예쁘게 배치되도록 설정 */
-#puzzle-game-area > div {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-}
-
-/* 스마트폰처럼 화면이 좁을 때는(가로 600px 이하) 원본과 퍼즐을 위아래로 배치해 크게 보기 */
+/* 모바일 반응형 자동 맞춤 */
 @media screen and (max-width: 600px) {
-    #puzzle-game-area > div {
-        flex-direction: column;
-        align-items: center;
+    .game-box {
+        width: 100% !important;
+        padding: 10px !important;
+        box-sizing: border-box;
     }
     
-    /* 퍼즐 조각과 원본 사진 크기를 모바일에 맞게 키우기 */
     #puzzle-board {
         grid-template-columns: repeat(3, 90px) !important;
         grid-template-rows: repeat(3, 90px) !important;
@@ -149,14 +18,11 @@ body {
     }
 
     #puzzle-original-img {
-        width: 130px !important;
-        height: 130px !important;
+        width: 110px !important;
+        height: 110px !important;
     }
-    
-    /* 게임 캔버스 크기 자동 맞춤 */
-    #gameCanvas {
-        width: 100% !important;
-        max-width: 350px;
-        height: auto !important;
+
+    .photo-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
     }
 }
