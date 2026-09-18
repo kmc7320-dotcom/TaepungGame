@@ -1,3 +1,13 @@
+/* 퍼즐 조각 기본 스타일 (PC/모바일 공통 적용) */
+.puzzle-piece {
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
 /* 모바일 반응형 자동 맞춤 */
 @media screen and (max-width: 600px) {
     .game-box {
