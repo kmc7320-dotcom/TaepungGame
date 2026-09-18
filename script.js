@@ -86,9 +86,23 @@ function clickPiece(index) {
         puzzleOrder[index] = temp;
         firstIndex = null;
         renderPuzzle(); 
-        checkWin();
+        if (typeof checkWin === 'function') {
+            checkWin();
+        }
     }
-    // 🖼️ 다른 사진 고르기 버튼 기능
+}
+
+// --- 🕹️ 화면 전환 및 로비 제어 함수들 (바깥으로 분리) ---
+
+// 메인 로비에서 퍼즐 메뉴를 여는 함수
+function openPuzzleMenu() {
+    document.getElementById("arcade-lobby").style.display = "none";
+    document.getElementById("puzzle-screen").style.display = "block";
+    document.getElementById("puzzle-select-menu").style.display = "block";
+    document.getElementById("puzzle-game-area").style.display = "none";
+}
+
+// 🖼️ 다른 사진 고르기 버튼 기능
 function backToPhotoSelect() {
     document.getElementById("puzzle-game-area").style.display = "none";
     document.getElementById("puzzle-select-menu").style.display = "block";
@@ -99,5 +113,4 @@ function goLobby() {
     document.getElementById("play-screen").style.display = "none";
     document.getElementById("puzzle-screen").style.display = "none";
     document.getElementById("arcade-lobby").style.display = "block";
-}
 }
