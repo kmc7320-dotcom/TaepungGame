@@ -88,4 +88,16 @@ function clickPiece(index) {
         renderPuzzle(); 
         checkWin();
     }
+    // 🖼️ 다른 사진 고르기 버튼 기능
+function backToPhotoSelect() {
+    document.getElementById("puzzle-game-area").style.display = "none";
+    document.getElementById("puzzle-select-menu").style.display = "block";
+}
+
+// 🏠 로비로 돌아가기 버튼 기능
+function goLobby() {
+    document.getElementById("play-screen").style.display = "none";
+    document.getElementById("puzzle-screen").style.display = "none";
+    document.getElementById("arcade-lobby").style.display = "block";
+}
 }
