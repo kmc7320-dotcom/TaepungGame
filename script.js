@@ -132,7 +132,7 @@ function backToNormalMenu() {
 // ==========================================
 let randomGridSize = 6; // 6 또는 12
 let currentRandomPhotoNum = 1;
-let maxPhotosInFolder = 34; // 💡 나중에 사진이 늘어나면 이 숫자만 100 등으로 변경하세요!
+let maxPhotosInFolder = 24; // 💡 나중에 사진이 100장으로 늘어나면 이 숫자를 100으로 변경하세요!
 let randomOrder = [];
 let randomPieces = [];
 let randomFirstIndex = null;
@@ -140,7 +140,6 @@ let randomFirstIndex = null;
 function startRandomGame() {
     playBGM();
     
-    // 선택된 난이도(6 또는 12) 가져오기
     let radios = document.getElementsByName('random-diff');
     for (let r of radios) {
         if (r.checked) {
@@ -151,7 +150,6 @@ function startRandomGame() {
     document.getElementById('random-select-menu').style.display = 'none';
     document.getElementById('random-game-area').style.display = 'block';
     
-    // 1부터 maxPhotosInFolder 사이의 무작위 사진 번호부터 시작
     currentRandomPhotoNum = Math.floor(Math.random() * maxPhotosInFolder) + 1;
     loadRandomPuzzleStage();
 }
@@ -160,7 +158,6 @@ function loadRandomPuzzleStage() {
     document.getElementById('next-random-btn').style.display = 'none';
     document.getElementById('random-puzzle-status').innerText = "";
 
-    // images 폴더 안의 파일명 조합 (예: images/1.jpg, images/2.jpg ...)
     let photoPath = `images/${currentRandomPhotoNum}.jpg`;
     document.getElementById('random-original-img').src = photoPath;
 
@@ -194,7 +191,7 @@ function initRandomBoard(photoPath) {
         piece.style.backgroundImage = `url('${photoPath}')`;
         piece.style.backgroundSize = `${boardPixelSize}px ${boardPixelSize}px`;
         piece.style.cursor = "pointer";
-        piece.style.boxSizing = "border-box";
+        piece.style.boxSizing = "box-sizing";
         
         piece.onclick = () => clickRandomPiece(i);
         board.appendChild(piece);
@@ -236,7 +233,6 @@ function checkRandomWin() {
 }
 
 function loadNextRandomPhoto() {
-    // 다음 사진 번호로 이동 (100장 등 최대치에 도달하면 다시 1번부터 순환)
     currentRandomPhotoNum++;
     if (currentRandomPhotoNum > maxPhotosInFolder) {
         currentRandomPhotoNum = 1;

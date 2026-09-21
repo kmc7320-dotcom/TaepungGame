@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐾 태풍이와 친구들 퍼즐 아케이드 🐾</title>
+    <title>🐾 태풍이랑 친구들의 퍼즐게임  🐾</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 배경 음악 플레이어 -->
+    <audio id="bgm-audio" loop>
+        <source src="music/강아지_꼬리흔들_초경쾌_멜로디.wav" type="audio/wav">
+    </audio>
+
     <div class="game-box">
-        <!-- 로비 화면: 두 가지 퍼즐 게임 선택 -->
+        <!-- 로비 화면 -->
         <div id="arcade-lobby" class="screen active">
             <h2>🐾 태풍이와 친구들의 Puzzle Game 🐾</h2>
             <p class="story-text">
@@ -16,7 +21,7 @@
             </p>
             <div class="arcade-buttons">
                 <button class="start-btn mode-btn" onclick="openNormalPuzzleMenu()">🧩 1번 모드: 일반 사진 조각 맞추기</button>
-                <button class="start-btn mode-btn" onclick="openRandomPuzzleMenu()">🎲 2번 모드: 6x6 / 12x12 폴더별 랜덤 연속 퍼즐</button>
+                <button class="start-btn mode-btn" onclick="openRandomPuzzleMenu()">🎲 2번 모드: 단일 폴더 랜덤 연속 퍼즐</button>
             </div>
         </div>
 
@@ -69,22 +74,18 @@
             <button onclick="goLobby()" class="lobby-btn">🏠 로비로 돌아가기</button>
         </div>
 
-        <!-- 2번 모드: 폴더 및 난이도(6x6/12x12) 선택 화면 -->
+        <!-- 2번 모드: 단일 폴더 랜덤 연속 퍼즐 화면 -->
         <div id="random-puzzle-screen" class="screen">
-            <h2>🎲 폴더별 랜덤 연속 퍼즐</h2>
+            <h2>🎲 단일 폴더 랜덤 연속 퍼즐</h2>
             <div id="random-select-menu">
-                <p>✨ 강아지 폴더와 난이도를 선택해 주세요!</p>
+                <p>✨ 난이도를 선택하고 게임을 시작하세요!</p>
                 
                 <div class="difficulty-select">
                     <label><input type="radio" name="random-diff" value="6" checked> 6 x 6 (36조각)</label>
                     <label style="margin-left: 20px;"><input type="radio" name="random-diff" value="12"> 12 x 12 (144조각)</label>
                 </div>
-
-                <div class="folder-grid">
-                    <button onclick="startRandomFolder('태풍이')" class="photo-btn" style="background:#ffecb3;">🐶 taepung (태풍이)</button>
-                    <button onclick="startRandomFolder('쿠크')" class="photo-btn" style="background:#d1e7dd;">🐶 cookie (쿠크)</button>
-                    <!-- 다른 폴더가 있다면 여기에 계속 추가 가능합니다 -->
-                </div>
+                <br>
+                <button onclick="startRandomGame()" class="start-btn mode-btn" style="background: #28a745; color: white;">🚀 퍼즐 시작하기</button>
             </div>
 
             <div id="random-game-area" style="display: none;">
@@ -99,7 +100,7 @@
                 <p id="random-puzzle-status" class="puzzle-status"></p>
                 <div style="margin-top: 10px;">
                     <button id="next-random-btn" onclick="loadNextRandomPhoto()" class="action-btn" style="display: none; background: #28a745;">✨ 다음 사진으로 넘어가기</button>
-                    <button onclick="backToRandomMenu()" class="action-btn" style="background: #17a2b8;">📁 폴더 선택으로 가기</button>
+                    <button onclick="backToRandomMenu()" class="action-btn" style="background: #17a2b8;">⚙️ 난이도 재선택</button>
                 </div>
             </div>
 
@@ -108,8 +109,4 @@
     </div>
     <script src="script.js"></script>
 </body>
-<!-- 배경 음악 플레이어 (자동 재생 및 반복) -->
-<audio id="bgm-audio" loop>
-    <source src="music/강아지_꼬리흔들.wav" type="audio/wav">
-</audio>
 </html>
