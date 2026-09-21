@@ -3,201 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐾태풍이와 친구들의 아케이드 랜드 🐾</title>
+    <title>🐾 태풍이와 친구들 퍼즐 아케이드 🐾</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* 메인 화면 전용 추가 감성 디자인 스타일 */
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            font-family: 'Malgun Gothic', sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .game-box {
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-width: 650px;
-            width: 100%;
-        }
-        .photo-btn {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 10px 5px;
-            font-size: 13px;
-            font-weight: bold;
-            color: #495057;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .photo-btn:hover {
-            background: #ffecb3;
-            border-color: #ffc107;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            color: #d35400;
-        }
-
-        /* 퍼즐 조각 기본 및 반응형 스타일 통합 */
-        .puzzle-piece {
-            background-size: cover; 
-            background-position: center;
-            background-repeat: no-repeat;
-            width: 100%;
-            height: 100%;
-            box-sizing: border-box;
-        }
-
-        @media screen and (max-width: 600px) {
-            .game-box {
-                width: 100% !important;
-                padding: 10px !important;
-                box-sizing: border-box;
-            }
-            #puzzle-board {
-                grid-template-columns: repeat(3, 90px) !important;
-                grid-template-rows: repeat(3, 90px) !important;
-            }
-            #puzzle-board > div {
-                width: 90px !important;
-                height: 90px !important;
-                background-size: 270px 270px !important;
-            }
-            #puzzle-original-img {
-                width: 110px !important;
-                height: 110px !important;
-            }
-            .photo-grid {
-                grid-template-columns: repeat(4, 1fr) !important;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="game-box">
-        <!-- 아케이드 메인 선택 화면 -->
-        <div id="arcade-lobby" style="display: block; text-align: center; padding-top: 20px;">
-            <h2>🐾 태풍이와 친구들의 아케이드 랜드 🐾</h2>
-            <p class="story-text" style="margin: 15px 0; color: #555;">
-                원하는 놀이를 선택해 주세요!<br> 즐거운 시간을 보내봐요 🦴
+        <!-- 로비 화면: 두 가지 퍼즐 게임 선택 -->
+        <div id="arcade-lobby" class="screen active">
+            <h2>🐾 태풍이와 친구들의 Puzzle Game 🐾</h2>
+            <p class="story-text">
+                원하는 퍼즐 모드를 선택해 주세요!<br> 즐거운 시간을 보내봐요 🦴
             </p>
-            <div class="arcade-buttons" style="display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 20px;">
-                <button class="start-btn" onclick="startRunningGame()" style="padding: 12px 24px; font-size: 16px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; width: 260px;">🏃‍♂️ 태풍이 뛰어놀기 (어질리티)</button>
-                <button class="start-btn" onclick="openPuzzleMenu()" style="padding: 12px 24px; font-size: 16px; background-color: #ffc107; color: #333; border: none; border-radius: 8px; cursor: pointer; width: 260px; font-weight: bold;">🧩 태풍이랑 친구들 사진 퍼즐</button>
+            <div class="arcade-buttons">
+                <button class="start-btn mode-btn" onclick="openNormalPuzzleMenu()">🧩 1번 모드: 일반 사진 조각 맞추기</button>
+                <button class="start-btn mode-btn" onclick="openRandomPuzzleMenu()">🎲 2번 모드: 6x6 / 12x12 폴더별 랜덤 연속 퍼즐</button>
             </div>
         </div>
 
-        <!-- 1. 뛰어놀기 게임 플레이 화면 -->
-        <div id="play-screen" style="display: none;">
-            <h2 id="taepung-dialog">안녕! 난 강태풍이야 🐾</h2>
-            <div class="score-board">
-                <p>🥏 원반 던지기: <span id="frisbee-count">0</span> / 5</p>
-                <p>🎾 공놀이: <span id="ball-count">0</span> / 3</p>
-                <h3 id="heart-status">획득한 하트: 🤍 🤍</h3>
-            </div>
-            
-            <div style="text-align: center;">
-                <canvas id="gameCanvas" width="400" height="200" style="max-width: 100%; height: auto; border: 2px solid #ccc; border-radius: 8px; background: #e8f5e9;"></canvas>
-            </div>
-
-            <div id="stage-1-panel" class="action-buttons" style="margin-top: 15px; text-align: center;">
-                <button onclick="throwFrisbee()" style="padding: 10px 15px; background: #ff9800; color: white; border: none; border-radius: 5px; cursor: pointer;">🥏 원반 던지기</button>
-                <button onclick="throwBall()" style="padding: 10px 15px; background: #e91e63; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 5px;">🎾 공놀이 하기</button>
-            </div>
-
-            <div id="stage-2-panel" class="action-buttons" style="display: none; margin-top: 15px; text-align: center;">
-                <button onclick="jumpButtonAction()" style="background-color: #28a745; color: white; font-size: 16px; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer;">
-                    🚧 태풍이 점프하기! (성공: <span id="hurdle-count">0</span>/3)
-                </button>
-            </div>
-
-            <div id="stage-3-panel" style="display: none; margin-top: 15px; text-align: center;">
-                <p style="font-weight: bold; color: #333; margin-bottom: 8px;">✨ 함께 놀 친구를 선택해 주세요!</p>
-                <div class="friend-grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 5px;">
-                    <button onclick="selectFriend('쿠크')" style="padding: 6px 10px; cursor: pointer;">🐶 쿠크</button>
-                    <button onclick="selectFriend('페리')" style="padding: 6px 10px; cursor: pointer;">🐕 페리</button>
-                    <button onclick="selectFriend('그레이')" style="padding: 6px 10px; cursor: pointer;">🐾 그레이</button>
-                    <button onclick="selectFriend('블랙')" style="padding: 6px 10px; cursor: pointer;">🐾 블랙</button>
-                    <button onclick="selectFriend('시온')" style="padding: 6px 10px; cursor: pointer;">🎾 시온</button>
-                    <button onclick="selectFriend('오셔니')" style="padding: 6px 10px; cursor: pointer;">🌊 오셔니</button>
-                    <button onclick="selectFriend('보름이')" style="padding: 6px 10px; cursor: pointer;">🌕 보름이</button>
-                    <button onclick="selectFriend('링')" style="padding: 6px 10px; cursor: pointer;">링</button>
-                    <button onclick="selectFriend('하루')" style="padding: 6px 10px; cursor: pointer;">하루</button>
-                    <button onclick="selectFriend('까미')" style="padding: 6px 10px; cursor: pointer;">까미</button>
-                    <button onclick="selectFriend('복실이')" style="padding: 6px 10px; cursor: pointer;">복실이</button>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 15px;">
-                <button onclick="goLobby()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">🏠 로비로 돌아가기</button>
-            </div>
-        </div>
-
-        <!-- 2. 조각 퍼즐 게임 화면 -->
-        <div id="puzzle-screen" style="display: none; text-align: center;">
-            <div style="background: linear-gradient(135deg, #ffecd2 100%, #fcb69f 0%); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-                <h2 style="margin: 0; color: #d35400; font-size: 24px;">🧩 태풍이와 친구들 조각 퍼즐</h2>
-                <p style="margin: 5px 0 0 0; color: #6e2c00; font-size: 14px;">조각을 클릭해 자리를 바꾸며 예쁜 사진을 완성해 보세요! 🦴</p>
-            </div>
-            
-            <!-- 사진 선택 메뉴 -->
-            <div id="puzzle-select-menu">
-                <p style="font-weight: bold; color: #555; margin-bottom: 12px;">✨ 즐거운 퍼즐시간</p>
-                <div class="photo-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0;">
-                    <button onclick="startPuzzleWithPhoto('1.jpg')" class="photo-btn">강태풍</button>
-                    <button onclick="startPuzzleWithPhoto('2.jpg')" class="photo-btn">쿠크</button>
-                    <button onclick="startPuzzleWithPhoto('3.jpg')" class="photo-btn">그레이블랙</button>
-                    <button onclick="startPuzzleWithPhoto('4.jpg')" class="photo-btn">하루</button>
-                    <button onclick="startPuzzleWithPhoto('5.jpg')" class="photo-btn">하이링</button>
-                    <button onclick="startPuzzleWithPhoto('6.jpg')" class="photo-btn">하이</button>
-                    <button onclick="startPuzzleWithPhoto('7.jpg')" class="photo-btn">오션</button>
-                    <button onclick="startPuzzleWithPhoto('8.jpg')" class="photo-btn">카이</button>
-                    <button onclick="startPuzzleWithPhoto('9.jpg')" class="photo-btn">시온</button>
-                    <button onclick="startPuzzleWithPhoto('10.jpg')" class="photo-btn">보름달토끼</button>
-                    <button onclick="startPuzzleWithPhoto('11.jpg')" class="photo-btn">감자</button>
-                    <button onclick="startPuzzleWithPhoto('12.jpg')" class="photo-btn">율무</button>
-                    <button onclick="startPuzzleWithPhoto('13.jpg')" class="photo-btn">가비치치</button>
-                    <button onclick="startPuzzleWithPhoto('14.jpg')" class="photo-btn">티나쏠티</button>
-                    <button onclick="startPuzzleWithPhoto('15.jpg')" class="photo-btn">뚜시</button>
-                    <button onclick="startPuzzleWithPhoto('16.jpg')" class="photo-btn">루이시아</button>
-                    <button onclick="startPuzzleWithPhoto('17.jpg')" class="photo-btn">바벨로우</button>
-                    <button onclick="startPuzzleWithPhoto('18.jpg')" class="photo-btn">보리</button>
-                    <button onclick="startPuzzleWithPhoto('19.jpg')" class="photo-btn">쩜메이</button>
-                    <button onclick="startPuzzleWithPhoto('20.jpg')" class="photo-btn">태풍쿠크페리</button>
-                    <button onclick="startPuzzleWithPhoto('21.jpg')" class="photo-btn">하쿠</button>
-                    <button onclick="startPuzzleWithPhoto('22.jpg')" class="photo-btn">호진탐</button>
-                    <button onclick="startPuzzleWithPhoto('23.jpg')" class="photo-btn">흑곰</button>
+        <!-- 1번 모드: 사진 선택 및 일반 퍼즐 화면 -->
+        <div id="normal-puzzle-screen" class="screen">
+            <h2>🧩 일반 조각 퍼즐</h2>
+            <div id="normal-select-menu">
+                <p>✨ 원하시는 사진을 선택해 주세요!</p>
+                <div class="photo-grid">
+                    <button onclick="startNormalPuzzle('1.jpg')" class="photo-btn">강태풍</button>
+                    <button onclick="startNormalPuzzle('2.jpg')" class="photo-btn">쿠크</button>
+                    <button onclick="startNormalPuzzle('3.jpg')" class="photo-btn">그레이블랙</button>
+                    <button onclick="startNormalPuzzle('4.jpg')" class="photo-btn">하루</button>
+                    <button onclick="startNormalPuzzle('5.jpg')" class="photo-btn">하이링</button>
+                    <button onclick="startNormalPuzzle('6.jpg')" class="photo-btn">하이</button>
+                    <button onclick="startNormalPuzzle('7.jpg')" class="photo-btn">오션</button>
+                    <button onclick="startNormalPuzzle('8.jpg')" class="photo-btn">카이</button>
+                    <button onclick="startNormalPuzzle('9.jpg')" class="photo-btn">시온</button>
+                    <button onclick="startNormalPuzzle('10.jpg')" class="photo-btn">보름달토끼</button>
+                    <button onclick="startNormalPuzzle('11.jpg')" class="photo-btn">감자</button>
+                    <button onclick="startNormalPuzzle('12.jpg')" class="photo-btn">율무</button>
+                    <button onclick="startNormalPuzzle('13.jpg')" class="photo-btn">가비치치</button>
+                    <button onclick="startNormalPuzzle('14.jpg')" class="photo-btn">티나쏠티</button>
+                    <button onclick="startNormalPuzzle('15.jpg')" class="photo-btn">뚜시</button>
+                    <button onclick="startNormalPuzzle('16.jpg')" class="photo-btn">루이시아</button>
+                    <button onclick="startNormalPuzzle('17.jpg')" class="photo-btn">베니</button>
+                    <button onclick="startNormalPuzzle('18.jpg')" class="photo-btn">바벨로우</button>
+                    <button onclick="startNormalPuzzle('19.jpg')" class="photo-btn">쩜메이</button>
+                    <button onclick="startNormalPuzzle('20.jpg')" class="photo-btn">태풍쿠크페리</button>
+                    <button onclick="startNormalPuzzle('21.jpg')" class="photo-btn">하쿠</button>
+                    <button onclick="startNormalPuzzle('22.jpg')" class="photo-btn">호진탐</button>
+                    <button onclick="startNormalPuzzle('23.jpg')" class="photo-btn">흑곰</button>
+                    <button onclick="startNormalPuzzle('24.jpg')" class="photo-btn">보리</button>
                 </div>
             </div> 
 
-            <!-- 실제 퍼즐 맞추기 판 -->
-            <div id="puzzle-game-area" style="display: none;">
-                <p id="puzzle-instruction" style="font-size: 14px; color: #555;">조각을 두 개씩 클릭하여 자리를 바꿔보세요!</p>
-                
-                <div class="puzzle-flex-container" style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; margin: 15px 0;">
-                    <div style="background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                        <p style="margin: 0 0 5px 0; font-size: 13px; font-weight: bold; color: #555;">📸 원본 사진</p>
-                        <img id="puzzle-original-img" src="" alt="원본 사진" style="width: 120px; height: 120px; object-fit: cover; border-radius: 4px; border: 2px solid #ccc;">
+            <div id="normal-game-area" style="display: none;">
+                <p class="puzzle-instruction">조각을 두 개씩 클릭하여 자리를 바꿔보세요!</p>
+                <div class="puzzle-flex-container">
+                    <div class="original-box">
+                        <p>📸 원본 사진</p>
+                        <img id="normal-original-img" src="" alt="원본 사진">
                     </div>
-                    
-                    <div id="puzzle-board" style="display: grid; grid-template-columns: repeat(3, 100px); grid-template-rows: repeat(3, 100px); gap: 2px; background: #333; padding: 2px; border-radius: 4px;"></div>
+                    <div id="normal-puzzle-board" class="puzzle-board"></div>
                 </div>
-
-                <p id="puzzle-status" style="font-weight: bold; color: #28a745; height: 20px;"></p>
-                <button onclick="backToPhotoSelect()" style="background: #17a2b8; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 5px; font-weight: bold;">🖼️ 다른 사진 고르기</button>
+                <p id="normal-puzzle-status" class="puzzle-status"></p>
+                <button onclick="backToNormalMenu()" class="action-btn">🖼️ 다른 사진 고르기</button>
             </div>
             
-            <br>
-            <button onclick="goLobby()" style="margin-top: 10px; background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">🏠 로비로 돌아가기</button>
+            <button onclick="goLobby()" class="lobby-btn">🏠 로비로 돌아가기</button>
+        </div>
+
+        <!-- 2번 모드: 폴더 및 난이도(6x6/12x12) 선택 화면 -->
+        <div id="random-puzzle-screen" class="screen">
+            <h2>🎲 폴더별 랜덤 연속 퍼즐</h2>
+            <div id="random-select-menu">
+                <p>✨ 강아지 폴더와 난이도를 선택해 주세요!</p>
+                
+                <div class="difficulty-select">
+                    <label><input type="radio" name="random-diff" value="6" checked> 6 x 6 (36조각)</label>
+                    <label style="margin-left: 20px;"><input type="radio" name="random-diff" value="12"> 12 x 12 (144조각)</label>
+                </div>
+
+                <div class="folder-grid">
+                    <button onclick="startRandomFolder('태풍이')" class="photo-btn" style="background:#ffecb3;">🐶 taepung (태풍이)</button>
+                    <button onclick="startRandomFolder('쿠크')" class="photo-btn" style="background:#d1e7dd;">🐶 cookie (쿠크)</button>
+                    <!-- 다른 폴더가 있다면 여기에 계속 추가 가능합니다 -->
+                </div>
+            </div>
+
+            <div id="random-game-area" style="display: none;">
+                <p class="puzzle-instruction">성공하면 자동으로 다음 사진으로 넘어갑니다!</p>
+                <div class="puzzle-flex-container">
+                    <div class="original-box">
+                        <p>📸 원본 사진</p>
+                        <img id="random-original-img" src="" alt="원본 사진">
+                    </div>
+                    <div id="random-puzzle-board" class="puzzle-board"></div>
+                </div>
+                <p id="random-puzzle-status" class="puzzle-status"></p>
+                <div style="margin-top: 10px;">
+                    <button id="next-random-btn" onclick="loadNextRandomPhoto()" class="action-btn" style="display: none; background: #28a745;">✨ 다음 사진으로 넘어가기</button>
+                    <button onclick="backToRandomMenu()" class="action-btn" style="background: #17a2b8;">📁 폴더 선택으로 가기</button>
+                </div>
+            </div>
+
+            <button onclick="goLobby()" class="lobby-btn">🏠 로비로 돌아가기</button>
         </div>
     </div>
     <script src="script.js"></script>
 </body>
+<!-- 배경 음악 플레이어 (자동 재생 및 반복) -->
+<audio id="bgm-audio" loop>
+    <source src="music/강아지_꼬리흔들.wav" type="audio/wav">
+</audio>
 </html>

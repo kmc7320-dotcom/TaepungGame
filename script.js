@@ -1,116 +1,249 @@
-// --- 조각 퍼즐 게임 로직 (반응형 완벽 호환 버전) ---
-let selectedPhoto = "1.jpg"; 
-let puzzleBoard = document.getElementById("puzzle-board");
-let firstIndex = null;
-let puzzleOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-let puzzlePieces = []; 
-
-// 화면 크기에 따라 조각 크기 자동 설정 (모바일은 90px, PC는 100px)
-function getTileSize() {
-    return window.innerWidth <= 600 ? 90 : 100;
+// 🎵 배경 음악 재생 함수
+function playBGM() {
+    let audio = document.getElementById('bgm-audio');
+    if (audio && audio.paused) {
+        audio.play().catch(error => {
+            console.log("브라우저 정책으로 인해 자동 재생 대기 중", error);
+        });
+    }
 }
 
-function startPuzzleWithPhoto(fileName) {
-    selectedPhoto = fileName;
-    document.getElementById("puzzle-select-menu").style.display = "none";
-    document.getElementById("puzzle-game-area").style.display = "block";
+// 화면 전환 함수
+function switchScreen(screenId) {
+    playBGM();
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+    document.getElementById(screenId).classList.add('active');
+}
+
+function goLobby() {
+    playBGM();
+    switchScreen('arcade-lobby');
+}
+
+function openNormalPuzzleMenu() {
+    playBGM();
+    switchScreen('normal-puzzle-screen');
+    document.getElementById('normal-select-menu').style.display = 'block';
+    document.getElementById('normal-game-area').style.display = 'none';
+}
+
+function openRandomPuzzleMenu() {
+    playBGM();
+    switchScreen('random-puzzle-screen');
+    document.getElementById('random-select-menu').style.display = 'block';
+    document.getElementById('random-game-area').style.display = 'none';
+}
+
+// ==========================================
+// 1번 모드: 일반 조각 퍼즐 (3x3 고정)
+// ==========================================
+let normalPhoto = "";
+let normalOrder = [];
+let normalPieces = [];
+let normalFirstIndex = null;
+const NORMAL_COLS = 3;
+const NORMAL_ROWS = 3;
+const NORMAL_TOTAL = 9;
+
+function startNormalPuzzle(fileName) {
+    playBGM();
+    normalPhoto = fileName;
+    document.getElementById('normal-select-menu').style.display = 'none';
+    document.getElementById('normal-game-area').style.display = 'block';
     
-    let originalImg = document.getElementById("puzzle-original-img");
-    if (originalImg) {
-        originalImg.src = `images/${selectedPhoto}`;
-    }
-    
-    // 완벽하게 섞이되, 시작할 때 원본과 똑같이 섞이는 경우 방지
+    document.getElementById('normal-original-img').src = `images/${normalPhoto}`;
+    document.getElementById('normal-puzzle-status').innerText = "";
+
     do {
-        puzzleOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-        puzzleOrder.sort(() => Math.random() - 0.5);
-    } while (puzzleOrder.every((val, idx) => val === idx));
+        normalOrder = Array.from({length: NORMAL_TOTAL}, (_, i) => i);
+        normalOrder.sort(() => Math.random() - 0.5);
+    } while (normalOrder.every((val, idx) => val === idx));
 
-    firstIndex = null;
-    document.getElementById("puzzle-status").innerText = "";
-    
-    initPuzzleBoard();
-    renderPuzzle();
+    normalFirstIndex = null;
+    initNormalBoard();
+    renderNormalBoard();
 }
 
-// 퍼즐 조각 9개를 생성하는 함수
-function initPuzzleBoard() {
-    puzzleBoard = document.getElementById("puzzle-board");
-    puzzleBoard.innerHTML = "";
-    puzzlePieces = [];
+function initNormalBoard() {
+    const board = document.getElementById('normal-puzzle-board');
+    board.innerHTML = "";
+    normalPieces = [];
 
-    let size = getTileSize();
-    let bgSize = size * 3;
+    const tileSize = 90;
+    board.style.gridTemplateColumns = `repeat(${NORMAL_COLS}, ${tileSize}px)`;
+    board.style.gridTemplateRows = `repeat(${NORMAL_ROWS}, ${tileSize}px)`;
 
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < NORMAL_TOTAL; i++) {
         let piece = document.createElement("div");
-        piece.style.width = size + "px";
-        piece.style.height = size + "px";
-        piece.style.backgroundImage = `url('images/${selectedPhoto}')`;
-        piece.style.backgroundSize = `${bgSize}px ${bgSize}px`;
+        piece.style.width = tileSize + "px";
+        piece.style.height = tileSize + "px";
+        piece.style.backgroundImage = `url('images/${normalPhoto}')`;
+        piece.style.backgroundSize = `${NORMAL_COLS * tileSize}px ${NORMAL_ROWS * tileSize}px`;
         piece.style.cursor = "pointer";
+        piece.style.boxSizing = "border-box";
         
-        piece.onclick = () => clickPiece(i);
-        puzzleBoard.appendChild(piece);
-        puzzlePieces.push(piece);
+        piece.onclick = () => clickNormalPiece(i);
+        board.appendChild(piece);
+        normalPieces.push(piece);
     }
 }
 
-// 섞인 순서 및 화면 크기에 맞춰 좌표 실시간 반영
-function renderPuzzle() {
-    let size = getTileSize();
-    let bgSize = size * 3;
-
-    puzzleOrder.forEach((imgIndex, currentIndex) => {
-        let piece = puzzlePieces[currentIndex];
-        
-        piece.style.width = size + "px";
-        piece.style.height = size + "px";
-        piece.style.backgroundSize = `${bgSize}px ${bgSize}px`;
-
-        let x = (imgIndex % 3) * -size;
-        let y = Math.floor(imgIndex / 3) * -size;
-        
+function renderNormalBoard() {
+    const tileSize = 90;
+    normalOrder.forEach((imgIndex, currentIndex) => {
+        let piece = normalPieces[currentIndex];
+        let x = (imgIndex % NORMAL_COLS) * -tileSize;
+        let y = Math.floor(imgIndex / NORMAL_COLS) * -tileSize;
         piece.style.backgroundPosition = `${x}px ${y}px`;
-        piece.style.border = (firstIndex === currentIndex) ? "3px solid #ffc107" : "1px solid #fff";
+        piece.style.border = (normalFirstIndex === currentIndex) ? "3px solid #ffc107" : "1px solid #fff";
     });
 }
 
-function clickPiece(index) {
-    if (firstIndex === null) {
-        firstIndex = index;
-        renderPuzzle(); 
+function clickNormalPiece(index) {
+    if (normalFirstIndex === null) {
+        normalFirstIndex = index;
+        renderNormalBoard();
     } else {
-        let temp = puzzleOrder[firstIndex];
-        puzzleOrder[firstIndex] = puzzleOrder[index];
-        puzzleOrder[index] = temp;
-        firstIndex = null;
-        renderPuzzle(); 
-        if (typeof checkWin === 'function') {
-            checkWin();
-        }
+        let temp = normalOrder[normalFirstIndex];
+        normalOrder[normalFirstIndex] = normalOrder[index];
+        normalOrder[index] = temp;
+        normalFirstIndex = null;
+        renderNormalBoard();
+        checkNormalWin();
     }
 }
 
-// --- 🕹️ 화면 전환 및 로비 제어 함수들 (바깥으로 분리) ---
-
-// 메인 로비에서 퍼즐 메뉴를 여는 함수
-function openPuzzleMenu() {
-    document.getElementById("arcade-lobby").style.display = "none";
-    document.getElementById("puzzle-screen").style.display = "block";
-    document.getElementById("puzzle-select-menu").style.display = "block";
-    document.getElementById("puzzle-game-area").style.display = "none";
+function checkNormalWin() {
+    let isWin = normalOrder.every((val, idx) => val === idx);
+    if (isWin) {
+        document.getElementById('normal-puzzle-status').innerText = "🎉 퍼즐 완성! 멋져요 🐾";
+    }
 }
 
-// 🖼️ 다른 사진 고르기 버튼 기능
-function backToPhotoSelect() {
-    document.getElementById("puzzle-game-area").style.display = "none";
-    document.getElementById("puzzle-select-menu").style.display = "block";
+function backToNormalMenu() {
+    openNormalPuzzleMenu();
 }
 
-// 🏠 로비로 돌아가기 버튼 기능
-function goLobby() {
-    document.getElementById("play-screen").style.display = "none";
-    document.getElementById("puzzle-screen").style.display = "none";
-    document.getElementById("arcade-lobby").style.display = "block";
+
+// ==========================================
+// 2번 모드: 단일 images 폴더 1~100장 랜덤 연속 퍼즐
+// ==========================================
+let randomGridSize = 6; // 6 또는 12
+let currentRandomPhotoNum = 1;
+let maxPhotosInFolder = 34; // 💡 나중에 사진이 늘어나면 이 숫자만 100 등으로 변경하세요!
+let randomOrder = [];
+let randomPieces = [];
+let randomFirstIndex = null;
+
+function startRandomGame() {
+    playBGM();
+    
+    // 선택된 난이도(6 또는 12) 가져오기
+    let radios = document.getElementsByName('random-diff');
+    for (let r of radios) {
+        if (r.checked) {
+            randomGridSize = parseInt(r.value);
+        }
+    }
+
+    document.getElementById('random-select-menu').style.display = 'none';
+    document.getElementById('random-game-area').style.display = 'block';
+    
+    // 1부터 maxPhotosInFolder 사이의 무작위 사진 번호부터 시작
+    currentRandomPhotoNum = Math.floor(Math.random() * maxPhotosInFolder) + 1;
+    loadRandomPuzzleStage();
+}
+
+function loadRandomPuzzleStage() {
+    document.getElementById('next-random-btn').style.display = 'none';
+    document.getElementById('random-puzzle-status').innerText = "";
+
+    // images 폴더 안의 파일명 조합 (예: images/1.jpg, images/2.jpg ...)
+    let photoPath = `images/${currentRandomPhotoNum}.jpg`;
+    document.getElementById('random-original-img').src = photoPath;
+
+    let totalPieces = randomGridSize * randomGridSize;
+    do {
+        randomOrder = Array.from({length: totalPieces}, (_, i) => i);
+        randomOrder.sort(() => Math.random() - 0.5);
+    } while (randomOrder.every((val, idx) => val === idx));
+
+    randomFirstIndex = null;
+    initRandomBoard(photoPath);
+    renderRandomBoard();
+}
+
+function initRandomBoard(photoPath) {
+    const board = document.getElementById('random-puzzle-board');
+    board.innerHTML = "";
+    randomPieces = [];
+
+    let tileSize = randomGridSize === 6 ? 45 : 22; 
+    let boardPixelSize = randomGridSize * tileSize;
+
+    board.style.gridTemplateColumns = `repeat(${randomGridSize}, ${tileSize}px)`;
+    board.style.gridTemplateRows = `repeat(${randomGridSize}, ${tileSize}px)`;
+
+    let totalPieces = randomGridSize * randomGridSize;
+    for (let i = 0; i < totalPieces; i++) {
+        let piece = document.createElement("div");
+        piece.style.width = tileSize + "px";
+        piece.style.height = tileSize + "px";
+        piece.style.backgroundImage = `url('${photoPath}')`;
+        piece.style.backgroundSize = `${boardPixelSize}px ${boardPixelSize}px`;
+        piece.style.cursor = "pointer";
+        piece.style.boxSizing = "border-box";
+        
+        piece.onclick = () => clickRandomPiece(i);
+        board.appendChild(piece);
+        randomPieces.push(piece);
+    }
+}
+
+function renderRandomBoard() {
+    let tileSize = randomGridSize === 6 ? 45 : 22;
+    randomOrder.forEach((imgIndex, currentIndex) => {
+        let piece = randomPieces[currentIndex];
+        let x = (imgIndex % randomGridSize) * -tileSize;
+        let y = Math.floor(imgIndex / randomGridSize) * -tileSize;
+        piece.style.backgroundPosition = `${x}px ${y}px`;
+        piece.style.border = (randomFirstIndex === currentIndex) ? "2px solid #ffc107" : "0.5px solid #fff";
+    });
+}
+
+function clickRandomPiece(index) {
+    if (randomFirstIndex === null) {
+        randomFirstIndex = index;
+        renderRandomBoard();
+    } else {
+        let temp = randomOrder[randomFirstIndex];
+        randomOrder[randomFirstIndex] = randomOrder[index];
+        randomOrder[index] = temp;
+        randomFirstIndex = null;
+        renderRandomBoard();
+        checkRandomWin();
+    }
+}
+
+function checkRandomWin() {
+    let isWin = randomOrder.every((val, idx) => val === idx);
+    if (isWin) {
+        document.getElementById('random-puzzle-status').innerText = "🎉 성공! 다음 사진으로 넘어가세요!";
+        document.getElementById('next-random-btn').style.display = 'inline-block';
+    }
+}
+
+function loadNextRandomPhoto() {
+    // 다음 사진 번호로 이동 (100장 등 최대치에 도달하면 다시 1번부터 순환)
+    currentRandomPhotoNum++;
+    if (currentRandomPhotoNum > maxPhotosInFolder) {
+        currentRandomPhotoNum = 1;
+    }
+    loadRandomPuzzleStage();
+}
+
+function backToRandomMenu() {
+    openRandomPuzzleMenu();
 }
