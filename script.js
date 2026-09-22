@@ -293,3 +293,60 @@ function loadNextRandomPhoto() {
 function backToRandomMenu() {
     openRandomPuzzleMenu();
 }
+
+// 💡 [추가된 함수] 사용자가 업로드한 내 사진을 받아와서 퍼즐을 시작하는 함수
+function loadCustomPhoto(event) {
+    let file = event.target.files[0];
+    if (!file) return;
+
+    // 업로드한 이미지 파일을 임시 주소로 변환
+    let reader = new FileReader();
+    reader.onload = function(e) {
+        let imageUrl = e.target.result;
+        
+        // 퍼즐 게임 화면으로 전환
+        playBGM();
+        document.getElementById('normal-select-menu').style.display = 'none';
+        document.getElementById('normal-game-area').style.display = 'block';
+        
+        // 원본 사진 자리에 업로드한 사진 넣기
+        document.getElementById('normal-original-img').src = imageUrl;
+        document.getElementById('normal-puzzle-status').innerText = "";
+
+        // 퍼즐 조각 섞기 및 보드 초기화
+        do {
+            normalOrder = Array.from({length: NORMAL_TOTAL}, (_, i) => i);
+            normalOrder.sort(() => Math.random() - 0.5);
+        } while (normalOrder.every((val, idx) => val === idx));
+
+        normalFirstIndex = null;
+        initCustomPuzzleBoard(imageUrl);
+        renderNormalBoard();
+    };
+    reader.readAsDataURL(file);
+}
+
+// 💡 [추가된 함수] 업로드한 이미지 주소를 사용하는 퍼즐판 생성기
+function initCustomPuzzleBoard(imageUrl) {
+    const board = document.getElementById('normal-puzzle-board');
+    board.innerHTML = "";
+    normalPieces = [];
+
+    const tileSize = 90;
+    board.style.gridTemplateColumns = `repeat(${NORMAL_COLS}, ${tileSize}px)`;
+    board.style.gridTemplateRows = `repeat(${NORMAL_ROWS}, ${tileSize}px)`;
+
+    for (let i = 0; i < NORMAL_TOTAL; i++) {
+        let piece = document.createElement("div");
+        piece.style.width = tileSize + "px";
+        piece.style.height = tileSize + "px";
+        piece.style.backgroundImage = `url('${imageUrl}')`;
+        piece.style.backgroundSize = `${NORMAL_COLS * tileSize}px ${NORMAL_ROWS * tileSize}px`;
+        piece.style.cursor = "pointer";
+        piece.style.boxSizing = "border-box";
+        
+        piece.onclick = () => clickNormalPiece(i);
+        board.appendChild(piece);
+        normalPieces.push(piece);
+    }
+}

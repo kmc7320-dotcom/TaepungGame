@@ -31,6 +31,12 @@
             <div id="normal-select-menu">
                 <p>✨ 원하시는 사진을 선택해 주세요!</p>
                 <!-- 💡 자바스크립트가 여기에 사진 버튼들을 자동으로 생성합니다 -->
+                 <div style="margin-bottom: 15px; background: #fff3cd; padding: 10px; border-radius: 8px; display: inline-block;">
+                    <label for="custom-photo-upload" class="action-btn" style="cursor: pointer; background: #ff9f43; color: white; display: inline-block; padding: 8px 15px; border-radius: 5px; font-size: 0.9em;">
+                        📁 내 사진으로 퍼즐 만들기
+                    </label>
+            <input type="file" id="custom-photo-upload" accept="image/*" style="display: none;" onchange="loadCustomPhoto(event)">
+        </div>
                 <div id="photo-button-container" class="photo-grid"></div>
             </div>
 
